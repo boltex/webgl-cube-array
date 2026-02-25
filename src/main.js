@@ -5,6 +5,7 @@ const CUBE_SIZE = 9;
 const GAP = 1;
 const ORBIT_SPEED = 0.12;
 const ORBIT_TILT_AMPLITUDE = 8;
+const DRAMATIC_PASS_FREQUENCY = 0.23;
 
 const canvas = document.getElementById("gl-canvas");
 const gl = canvas.getContext("webgl");
@@ -336,11 +337,23 @@ function render(milliseconds) {
     const aspect = canvas.width / canvas.height;
     perspective(projection, Math.PI / 3, aspect, 1, 2000);
 
-    const angle = time * ORBIT_SPEED;
+    const baseAngle = time * ORBIT_SPEED;
+    const angularDrift = Math.sin(time * 0.18) * 0.35 + Math.sin(time * 0.53) * 0.08;
+    const angle = baseAngle + angularDrift;
+
+    const dramaticPass = Math.pow(Math.max(0, Math.sin(time * DRAMATIC_PASS_FREQUENCY - 0.9)), 6);
+    const radialPulse = 0.88 + 0.14 * Math.sin(time * 0.21 + 1.1) + 0.08 * Math.sin(time * 0.67);
+    const dynamicRadius = orbitRadius * Math.max(0.64, radialPulse) * (1 - dramaticPass * 0.28);
+    const dynamicHeight =
+        baseHeight +
+        Math.sin(time * 0.7) * ORBIT_TILT_AMPLITUDE -
+        dramaticPass * (span * 0.42) +
+        Math.sin(time * 1.1) * 1.8;
+
     const eye = [
-        Math.cos(angle) * orbitRadius,
-        baseHeight + Math.sin(angle * 0.7) * ORBIT_TILT_AMPLITUDE,
-        Math.sin(angle) * orbitRadius,
+        Math.cos(angle) * dynamicRadius,
+        dynamicHeight,
+        Math.sin(angle) * dynamicRadius,
     ];
 
     lookAt(view, eye, target, up);
