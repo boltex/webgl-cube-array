@@ -1,6 +1,6 @@
 # webgl-cube-array
 
-A minimal vanilla WebGL demo that renders a 32x32 array of cubes with random colors, white background, medium white fog, and a slowly orbiting camera.
+A minimal vanilla WebGL demo that renders a 16x16 vertical wall of cubes with random colors, white background, medium white fog, and a slowly orbiting camera.
 
 ## Run
 

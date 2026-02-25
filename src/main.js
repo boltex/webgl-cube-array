@@ -1,6 +1,6 @@
 import { vertexShaderSource, fragmentShaderSource } from "./shaders.js";
 
-const GRID_SIZE = 32;
+const GRID_SIZE = 16;
 const CUBE_SIZE = 10;
 const GAP = 1;
 const ORBIT_SPEED = 0.12;
@@ -236,9 +236,9 @@ const halfSpan = span * 0.5;
 for (let row = 0; row < GRID_SIZE; row += 1) {
     for (let column = 0; column < GRID_SIZE; column += 1) {
         const x = column * stride - halfSpan;
-        const z = row * stride - halfSpan;
+        const y = row * stride - halfSpan;
         cubes.push({
-            position: [x, 0, z],
+            position: [x, y, 0],
             color: [0.2 + Math.random() * 0.8, 0.2 + Math.random() * 0.8, 0.2 + Math.random() * 0.8],
         });
     }
