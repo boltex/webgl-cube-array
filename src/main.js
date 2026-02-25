@@ -1,7 +1,7 @@
 import { vertexShaderSource, fragmentShaderSource } from "./shaders.js";
 
 const GRID_SIZE = 16;
-const CUBE_SIZE = 10;
+const CUBE_SIZE = 9;
 const GAP = 1;
 const ORBIT_SPEED = 0.12;
 const ORBIT_TILT_AMPLITUDE = 8;
