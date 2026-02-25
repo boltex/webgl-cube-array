@@ -163,16 +163,24 @@ gl.useProgram(program);
 
 const attributes = {
     position: gl.getAttribLocation(program, "aPosition"),
+    normal: gl.getAttribLocation(program, "aNormal"),
 };
 
 const uniforms = {
     model: gl.getUniformLocation(program, "uModel"),
     view: gl.getUniformLocation(program, "uView"),
     projection: gl.getUniformLocation(program, "uProjection"),
+    normalMatrix: gl.getUniformLocation(program, "uNormalMatrix"),
     color: gl.getUniformLocation(program, "uColor"),
     fogColor: gl.getUniformLocation(program, "uFogColor"),
     fogNear: gl.getUniformLocation(program, "uFogNear"),
     fogFar: gl.getUniformLocation(program, "uFogFar"),
+    cameraPosition: gl.getUniformLocation(program, "uCameraPosition"),
+    lightPositions: gl.getUniformLocation(program, "uLightPositions"),
+    lightColors: gl.getUniformLocation(program, "uLightColors"),
+    ambientStrength: gl.getUniformLocation(program, "uAmbientStrength"),
+    specularStrength: gl.getUniformLocation(program, "uSpecularStrength"),
+    shininess: gl.getUniformLocation(program, "uShininess"),
 };
 
 const half = 0.5;
@@ -217,12 +225,51 @@ const cubeIndices = new Uint16Array([
     20, 21, 22, 20, 22, 23,
 ]);
 
+const cubeNormals = new Float32Array([
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1,
+
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+
+    0, -1, 0,
+    0, -1, 0,
+    0, -1, 0,
+    0, -1, 0,
+
+    1, 0, 0,
+    1, 0, 0,
+    1, 0, 0,
+    1, 0, 0,
+
+    -1, 0, 0,
+    -1, 0, 0,
+    -1, 0, 0,
+    -1, 0, 0,
+]);
+
 const positionBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 gl.bufferData(gl.ARRAY_BUFFER, cubeVertices, gl.STATIC_DRAW);
 
 gl.enableVertexAttribArray(attributes.position);
 gl.vertexAttribPointer(attributes.position, 3, gl.FLOAT, false, 0, 0);
+
+const normalBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, cubeNormals, gl.STATIC_DRAW);
+
+gl.enableVertexAttribArray(attributes.normal);
+gl.vertexAttribPointer(attributes.normal, 3, gl.FLOAT, false, 0, 0);
 
 const indexBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -247,10 +294,23 @@ for (let row = 0; row < GRID_SIZE; row += 1) {
 const projection = createIdentity();
 const view = createIdentity();
 const model = createIdentity();
+const normalMatrix = new Float32Array([
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1,
+]);
 
 const target = [0, 0, 0];
 const up = [0, 1, 0];
 const fogColor = [1, 1, 1];
+const lightPositions = new Float32Array([
+    span * 0.85, span * 0.65, span * 0.95,
+    -span * 0.75, -span * 0.45, -span * 0.95,
+]);
+const lightColors = new Float32Array([
+    1.0, 1.0, 1.0,
+    1.0, 0.98, 0.96,
+]);
 
 const orbitRadius = span * 0.95;
 const baseHeight = span * 0.35;
@@ -294,9 +354,16 @@ function render(milliseconds) {
 
     gl.uniformMatrix4fv(uniforms.view, false, view);
     gl.uniformMatrix4fv(uniforms.projection, false, projection);
+    gl.uniformMatrix3fv(uniforms.normalMatrix, false, normalMatrix);
     gl.uniform3fv(uniforms.fogColor, fogColor);
     gl.uniform1f(uniforms.fogNear, orbitRadius * 0.5);
     gl.uniform1f(uniforms.fogFar, orbitRadius * 1.45);
+    gl.uniform3fv(uniforms.cameraPosition, eye);
+    gl.uniform3fv(uniforms.lightPositions, lightPositions);
+    gl.uniform3fv(uniforms.lightColors, lightColors);
+    gl.uniform1f(uniforms.ambientStrength, 0.35);
+    gl.uniform1f(uniforms.specularStrength, 0.45);
+    gl.uniform1f(uniforms.shininess, 28.0);
 
     for (const cube of cubes) {
         makeTranslationScale(model, cube.position[0], cube.position[1], cube.position[2], CUBE_SIZE);
