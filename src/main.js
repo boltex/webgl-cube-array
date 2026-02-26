@@ -375,14 +375,14 @@ function render(milliseconds) {
     gl.uniformMatrix4fv(uniforms.projection, false, projection);
     gl.uniformMatrix3fv(uniforms.normalMatrix, false, normalMatrix);
     gl.uniform3fv(uniforms.fogColor, fogColor);
-    gl.uniform1f(uniforms.fogNear, orbitRadius * 0.5);
-    gl.uniform1f(uniforms.fogFar, orbitRadius * 1.45);
+    gl.uniform1f(uniforms.fogNear, orbitRadius * 0.25);
+    gl.uniform1f(uniforms.fogFar, orbitRadius * 1.4);
     gl.uniform3fv(uniforms.cameraPosition, eye);
     gl.uniform3fv(uniforms.lightPositions, lightPositions);
     gl.uniform3fv(uniforms.lightColors, lightColors);
-    gl.uniform1f(uniforms.ambientStrength, 0.35);
-    gl.uniform1f(uniforms.specularStrength, 0.45);
-    gl.uniform1f(uniforms.shininess, 28.0);
+    gl.uniform1f(uniforms.ambientStrength, 0.50);
+    gl.uniform1f(uniforms.specularStrength, 0.85);
+    gl.uniform1f(uniforms.shininess, 25.0);
 
     for (const cube of cubes) {
         makeTranslationScale(model, cube.position[0], cube.position[1], cube.position[2], CUBE_SIZE);
